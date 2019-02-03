@@ -2,19 +2,13 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Response;
 
 
-class HelloController extends AbstractController
+class HelloController
 {
-    /**
-     * @Route("/hello", name="hello")
-     */
     public function index()
     {
-        return $this->render('hello/index.html.twig', [
-            'controller_name' => 'HelloController',
-        ]);
+        return new Response("Hello Symfony!");
     }
 }
