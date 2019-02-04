@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -17,72 +18,43 @@ class HelloController extends AbstractController
     /**
      * @Route("/hello", name="hello")
      */
-    public function index(Request $request)
+    public function index(Request $request, SessionInterface $session)
     {
-        $person = new Person();
-        $person->setName('taro')
-            ->setAge(36)
-            ->setMail('taro@yamada.kun');
-
-        $form = $this->createFormBuilder($person)
-            ->add('name', TextType::class)
-            ->add('age', IntegerType::class)
-            ->add('mail', EmailType::class)
+        $data = new MyData();
+        $form = $this->createFormBuilder($data)
+            ->add('data', TextType::class)
             ->add('save', SubmitType::class, ['label' => 'Click'])
             ->getForm();
 
         if ($request->getMethod() === 'POST') {
             $form->handleRequest($request);
-            $obj = $form->getData();
-            $msg = 'Name: ' . $obj->getName() . '<br>' . 'Age: ' . $obj->getAge() . '<br>' . 'Mail: '. $obj->getMail();
-        } else {
-            $msg = 'お名前をどうぞ！';
+            $data = $form->getData();
+            if ($data->getData() == '!') {
+                $session->remove('data');
+            } else {
+                $session->set('data', $data->getData());
+            }
         }
 
         return $this->render('hello/index.html.twig', [
-           'title' => 'Hello',
-           'message' => $msg,
-           'form' => $form->createView()
+            'title' => 'Hello',
+            'data' => $session->get('data'),
+            'form' => $form->createView(),
         ]);
     }
 }
 
-class Person
+class Mydata
 {
-    protected $name;
-    protected $age;
-    protected $mail;
+    protected $data = '';
 
-    public function getName()
+    public function getData()
     {
-        return $this->name;
+        return $this->data;
     }
 
-    public function setName($name)
+    public function setData($data)
     {
-        $this->name = $name;
-        return $this;
-    }
-
-    public function getAge()
-    {
-        return $this->age;
-    }
-
-    public function setAge($age)
-    {
-        $this->age = $age;
-        return $this;
-    }
-
-    public function getMail()
-    {
-        return $this->mail;
-    }
-
-    public function setMail($mail)
-    {
-        $this->mail = $mail;
-        return $this;
+        $this->data = $data;
     }
 }
