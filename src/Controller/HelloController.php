@@ -78,7 +78,8 @@ class HelloController extends AbstractController
         if ($request->getMethod() == 'POST') {
             $form->handleRequest($request);
             $findStr = $form->getData()->getFind();
-            $query = $manager->createQuery("SELECT p FROM App\Entity\Person p WHERE p.name = '{$findStr}'");
+            $query = $manager->createQuery();
+            $query->setDQL("SELECT p FROM APP\Entity\Person p WHERE p.name = '{$findStr}'");
             $result = $query->getResult();
         } else {
             $result = $repository->findAllWithSort();
