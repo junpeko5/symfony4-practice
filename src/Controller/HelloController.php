@@ -24,6 +24,7 @@ class HelloController extends AbstractController
         return $this->render('hello/index.html.twig', [
             'title' => 'Hello',
             'data' => $data,
+            'leader' => '<h1>見出し</h1>'
         ]);
     }
 }
