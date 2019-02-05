@@ -72,11 +72,14 @@ class HelloController extends AbstractController
             ->getForm();
 
         $repository = $this->getDoctrine()->getRepository(Person::class);
+
+        $manager = $this->getDoctrine()->getManager();
+
         if ($request->getMethod() == 'POST') {
             $form->handleRequest($request);
             $findStr = $form->getData()->getFind();
-
-            $result = $repository->findByNameOrMail($findStr);
+            $query = $manager->createQuery("SELECT p FROM App\Entity\Person p WHERE p.name = '{$findStr}'");
+            $result = $query->getResult();
         } else {
             $result = $repository->findAllWithSort();
         }
