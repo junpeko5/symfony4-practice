@@ -6,7 +6,7 @@
 {% block body %}
     <p>※テーブルを用意します。</p>
     {% include '/hello/table.html.twig' with [data] %}
-    {% autoescape 'html' %}
-        {{ leader }}
-    {% endautoescape %}
+    {% include '/hello/autoescape.html.twig' with [leader] %}
+    {% include '/hello/filter.html.twig' with [leader] %}
+
 {% endblock %}

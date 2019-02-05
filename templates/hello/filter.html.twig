@@ -1,0 +1,31 @@
+{{ leader | raw }}
+{{ leader | escape }}
+<br>
+{{ title | upper }}
+<br>
+{{ upper | lower }}
+<br>
+{{ title | capitalize }}
+<br>
+{{ minus | abs }}
+<br>
+{{ now | date('Y/m/d') }}
+<br>
+{{ data | json_encode }}
+<br>
+{{ leader | length }}
+<br>
+{{ minus | number_format(minus) }}
+<br>
+{{ title | reverse }}
+<br>
+{{ num | round }}
+<br>
+{% for n in nums | sort %}
+{{ n }}
+{% endfor %}
+
+<br>
+{{ upper | trim }}
+<br>
+{{ url | url_encode }}

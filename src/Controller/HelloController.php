@@ -24,7 +24,14 @@ class HelloController extends AbstractController
         return $this->render('hello/index.html.twig', [
             'title' => 'Hello',
             'data' => $data,
-            'leader' => '<h1>見出し</h1>'
+            'leader' => '<h1>見出し</h1>',
+            'upper' => 'Upp,er',
+            'minus' => -1000,
+            'now' => date('Y-m-d'),
+            'arr' => ['apple'],
+            'num' => 1.32323,
+            'nums' => [1,4,2,4,6,7,8,9],
+            'url' => 'http://127.0.0.1:8001/hello'
         ]);
     }
 }
