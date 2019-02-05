@@ -32,6 +32,19 @@ class PersonRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @param $value
+     * @return mixed
+     */
+    public function findByAge($value)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.age >= ?1')
+            ->setParameter(1, $value)
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return Person[] Returns an array of Person objects
     //  */
