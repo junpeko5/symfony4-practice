@@ -104,6 +104,9 @@ class HelloController extends AbstractController
 
     /**
      * @Route("/update/{id}", name="update")
+     * @param Request $request
+     * @param Person $person
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function update(Request $request, Person $person)
     {
@@ -126,6 +129,38 @@ class HelloController extends AbstractController
                'title' => 'Hello',
                'message' => 'Update Entity id=' . $person->getId(),
                'form' => $form->createView(),
+            ]);
+        }
+    }
+
+
+    /**
+     * @Route("/delete/{id}", name="delete")
+     * @param Request $request
+     * @param Person $person
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function delete(Request $request, Person $person)
+    {
+        $form = $this->createFormBuilder($person)
+            ->add('name', TextType::class)
+            ->add('mail', TextType::class)
+            ->add('age', IntegerType::class)
+            ->add('save', SubmitType::class, ['label' => 'Click'])
+            ->getForm();
+
+        if ($request->getMethod() === 'POST') {
+            $form->handleRequest($request);
+            $person = $form->getData();
+            $manager = $this->getDoctrine()->getManager();
+            $manager->remove($person);
+            $manager->flush();
+            return $this->redirect('/hello');
+        } else {
+            return $this->render('/hello/create.html.twig', [
+                'title' => 'Hello',
+                'message' => 'Delete Entity id=' . $person->getId(),
+                'form' => $form->createView()
             ]);
         }
     }
