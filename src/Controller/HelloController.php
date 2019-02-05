@@ -56,30 +56,15 @@ class HelloController extends AbstractController
     }
 
     /**
-     * @Route("/find", name="find")
+     * @Route("/find/{id}", name="find")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function find(Request $request)
+    public function find(Request $request, Person $person)
     {
-        $formObj = new FindForm();
-        $form = $this->createFormBuilder($formObj)
-            ->add('find', TextType::class)
-            ->add('save', SubmitType::class, ['label' => 'Click'])
-            ->getForm();
-        if ($request->getMethod() === 'POST') {
-            $form->handleRequest($request);
-            $findStr = $form->getData()->getFind();
-            $repository = $this->getDoctrine()
-                ->getRepository(Person::class);
-            $result = $repository->find($findStr);
-        } else {
-            $result = null;
-        }
         return $this->render('hello/find.html.twig', [
            'title' => 'Hello',
-           'form' => $form->createView(),
-           'data' => $result,
+           'data' => $person,
         ]);
     }
 }
