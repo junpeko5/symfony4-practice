@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Person;
 use App\Form\PersonType;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -75,14 +76,19 @@ class HelloController extends AbstractController
 
         $manager = $this->getDoctrine()->getManager();
 
+        $mapping = new ResultSetMappingBuilder($manager);
+        $mapping->addRootEntityFromClassMetadata('App\Entity\Person', 'p');
+
         if ($request->getMethod() == 'POST') {
             $form->handleRequest($request);
             $findStr = $form->getData()->getFind();
-            $query = $manager->createQuery();
-            $query->setDQL("SELECT p FROM APP\Entity\Person p WHERE p.name = '{$findStr}'");
+            $arr = explode(',', $findStr);
+            $query = $manager->createNativeQuery('SELECT * FROM person WHERE age between ?1 AND ?2', $mapping)
+                ->setParameters([1 => $arr[0], 2 => $arr[1]]);
             $result = $query->getResult();
         } else {
-            $result = $repository->findAllWithSort();
+            $query = $manager->createNativeQuery('SELECT * FROM person', $mapping);
+            $result = $query->getResult();
         }
         return $this->render('hello/find.html.twig', [
            'title' => 'Hello',
