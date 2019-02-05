@@ -59,12 +59,11 @@ class HelloController extends AbstractController
 
 
     /**
-     * @Route("/find/{id}", name="find")
+     * @Route("/find", name="find")
      * @param Request $request
-     * @param Person $person
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function find(Request $request, Person $person)
+    public function find(Request $request)
     {
         $formObj = new FindForm();
         $form = $this->createFormBuilder($formObj)
@@ -76,7 +75,7 @@ class HelloController extends AbstractController
             $form->handleRequest($request);
             $findStr = $form->getData()->getFind();
             $repository = $this->getDoctrine()->getRepository(Person::class);
-            $result = $repository->findByAge($findStr);
+            $result = $repository->findByName($findStr);
         } else {
             $result = null;
         }
