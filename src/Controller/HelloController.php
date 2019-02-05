@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Person;
+use App\Form\PersonType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -79,15 +80,10 @@ class HelloController extends AbstractController
     public function create(Request $request)
     {
         $person = new Person();
-        $form = $this->createFormBuilder($person)
-            ->add('name', TextType::class)
-            ->add('mail', TextType::class)
-            ->add('age', IntegerType::class)
-            ->add('save', SubmitType::class)
-            ->getForm();
+        $form = $this->createForm(PersonType::class, $person);
+        $form->handleRequest($request);
 
         if ($request->getMethod() === 'POST') {
-            $form->handleRequest($request);
             $person = $form->getData();
             $manager = $this->getDoctrine()->getManager();
             $manager->persist($person);
