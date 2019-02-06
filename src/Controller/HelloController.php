@@ -53,7 +53,7 @@ class HelloController extends AbstractController
     public function hello(Request $request)
     {
         $finder = new Finder();
-        $finder->directories()->in('../src/');
+        $finder->files()->depth('<=1')->in('../src/');
         return $this->render('hello/hello.html.twig', [
            'title' => 'Hello',
            'message' => 'get file/folder',
