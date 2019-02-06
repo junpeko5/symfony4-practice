@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class HelloController extends AbstractController
 {
@@ -107,33 +108,38 @@ class HelloController extends AbstractController
      */
     public function create(Request $request ,ValidatorInterface $validator)
     {
-        $person = new Person();
-        $form = $this->createForm(PersonType::class, $person);
-        $form->handleRequest($request);
-
+        $form = $this->createFormBuilder()
+            ->add('name', TextType::class,
+                [
+                    'required' => true,
+                    'constraints' => [
+                        new Assert\Length([
+                            'min' => 3,
+                            'max' => 10,
+                            'minMessage' => '3文字以上必要です。',
+                            'maxMessage' => '10文字以内にしてください。'
+                        ])
+                    ]
+                ]
+            )
+            ->add('save', SubmitType::class, ['label' => 'Click'])
+            ->getForm();
         if ($request->getMethod() === 'POST') {
-            $person = $form->getData();
-            $errors = $validator->validate($person);
-
-            if (count($errors) === 0) {
-                $manager = $this->getDoctrine()->getManager();
-                $manager->persist($person);
-                $manager->flush();
-                return $this->redirect('/hello');
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                $msg = 'Hello, '. $form->get('name')->getData() . '!';
             } else {
-                return $this->render('hello/create.html.twig', [
-                   'title' => 'Hello',
-                   'message' => 'ERROR!',
-                   'form' => $form->createView(),
-                ]);
+                $msg = 'Error!';
             }
         } else {
-            return $this->render('hello/create.html.twig', [
-                'title' => 'Hello',
-                'message' => 'Create Entity',
-                'form' => $form->createView(),
-            ]);
+            $msg = 'Send Form';
         }
+        return $this->render('hello/create.html.twig' , [
+            'title' => 'Hello',
+            'message' => $msg,
+            'form' => $form->createView()
+        ]);
+
     }
 
     /**
