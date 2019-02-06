@@ -6,6 +6,7 @@ use App\Entity\Person;
 use App\Form\PersonType;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -51,12 +52,12 @@ class HelloController extends AbstractController
      */
     public function hello(Request $request)
     {
-        $repository = $this->getDoctrine()
-            ->getRepository(Person::class);
-        $data = $repository->findAll();
+        $finder = new Finder();
+        $finder->files()->in(__DIR__);
         return $this->render('hello/hello.html.twig', [
            'title' => 'Hello',
-           'data' => $data,
+           'message' => __DIR__,
+           'finder' => $finder,
         ]);
     }
 
