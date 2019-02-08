@@ -6,6 +6,8 @@ use App\Entity\Person;
 use App\Form\PersonType;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -52,17 +54,23 @@ class HelloController extends AbstractController
      */
     public function hello(Request $request)
     {
-        $finder = new Finder();
-        $finder->files()->path('var/log')->name('dev.log')->in('../');
-        $file = null;
-        foreach($finder as $item) {
-            $file = $item;
-            break;
+        $fileSystem = new Filesystem();
+        $temp = __DIR__ . '/temp';
+
+        try {
+            if (!$fileSystem->exists($temp)) {
+                $fileSystem->mkdir($temp);
+            }
+            $fileSystem->appendToFile($temp . './temp.txt', "WRITE TEXT!!");
+            $fileSystem->appendToFile($temp . './temp.txt', date("Y-m-d H:i:s"));
+            $fileSystem->appendToFile($temp . './temp.txt', "\n");
+        } catch (IOExceptionInterface $e) {
+            echo "ERROR! " . $e->getPath();
         }
+
         return $this->render('hello/hello.html.twig', [
            'title' => 'Hello',
            'message' => 'get file/folder',
-           'file' => $file,
         ]);
     }
 
