@@ -55,12 +55,14 @@ class HelloController extends AbstractController
      */
     public function hello(Request $request)
     {
-        $form = $this->createForm(HelloType::class, null);
+        $formObj = new HelloForm();
+        $form = $this->createForm(HelloType::class, $formObj);
         $form->handleRequest($request);
 
         if ($request->getMethod() === 'POST') {
-            $this->addFlash('info.mail', 'mail:' . $form->getData()['mail']);
-            $msg = 'Hello, ' . $form->getData()['name'] . '!!';
+            $formObj = $form->getData();
+            $this->addFlash('info.mail', $formObj);
+            $msg = 'Hello, ' . $formObj->getName() . '!!';
         } else {
             $msg = 'Send Form';
         }
@@ -230,5 +232,36 @@ class FindForm
     public function setFind($find)
     {
         $this->find = $find;
+    }
+}
+
+class HelloForm
+{
+    private $name;
+    private $mail;
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    public function getMail()
+    {
+        return $this->mail;
+    }
+
+    public  function setMail($mail)
+    {
+        $this->mail = $mail;
+    }
+
+    public function __toString()
+    {
+        return '*** ' .$this->name. '['. $this->mail . '] ***';
     }
 }
