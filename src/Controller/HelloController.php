@@ -51,6 +51,7 @@ class HelloController extends AbstractController
     /**
      * @Route("/hello", name="hello")
      * @param Request $request
+     * @param SessionInterface $session
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function hello(Request $request, SessionInterface $session)
@@ -66,13 +67,21 @@ class HelloController extends AbstractController
         } else {
             $msg = 'Send Form';
         }
-
         return $this->render('hello/hello.html.twig', [
            'title' => 'Hello',
            'message' => $msg,
-           'bag' => $session->getFlashBag(),
+           'bug' => $session->getFlashBag(),
            'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/clear", name="class")
+     */
+    public function clear(Request $request, SessionInterface $session)
+    {
+        $session->getFlashBag()->clear();
+        return $this->redirect('/hello');
     }
 
 

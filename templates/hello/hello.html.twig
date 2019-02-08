@@ -12,9 +12,9 @@
         }
     </style>
     <h2>Hello</h2>
-    {% for message in app.flashes('info.mail') %}
+    {% for message in bug.peek('info.mail') %}
         <div class="flash-notice">
-            {{ message }}
+            {{ message.name }}
         </div>
     {% endfor %}
     <p>{{ message }}</p>
