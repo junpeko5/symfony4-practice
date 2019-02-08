@@ -53,7 +53,7 @@ class HelloController extends AbstractController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function hello(Request $request)
+    public function hello(Request $request, SessionInterface $session)
     {
         $formObj = new HelloForm();
         $form = $this->createForm(HelloType::class, $formObj);
@@ -61,7 +61,7 @@ class HelloController extends AbstractController
 
         if ($request->getMethod() === 'POST') {
             $formObj = $form->getData();
-            $this->addFlash('info.mail', $formObj);
+            $session->getFlashBag()->add('info.mail', $formObj);
             $msg = 'Hello, ' . $formObj->getName() . '!!';
         } else {
             $msg = 'Send Form';
@@ -70,6 +70,7 @@ class HelloController extends AbstractController
         return $this->render('hello/hello.html.twig', [
            'title' => 'Hello',
            'message' => $msg,
+           'bag' => $session->getFlashBag(),
            'form' => $form->createView(),
         ]);
     }
