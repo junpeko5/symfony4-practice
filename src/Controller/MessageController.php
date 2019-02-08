@@ -20,7 +20,7 @@ class MessageController extends AbstractController
             ->getRepository(Message::class);
         $data = $repository->findAll();
 
-        return $this->render('message/index.html.twig', [
+        return $this->render('message/login.html.twig', [
             'title' => 'Message',
             'data' =>$data,
         ]);

@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -33,7 +34,7 @@ class HelloController extends AbstractController
             ['name' => 'Sachiko', 'age' => 43, 'mail' => 'sachico@happy'],
             ['name' => 'Jiro', 'age' => 18, 'mail' => 'jiro@change'],
         ];
-        return $this->render('hello/index.html.twig', [
+        return $this->render('hello/login.html.twig', [
             'title' => 'Hello',
             'data' => $data,
             'leader' => '<h1>見出し</h1>',
@@ -54,24 +55,16 @@ class HelloController extends AbstractController
      * @param SessionInterface $session
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function hello(Request $request, SessionInterface $session)
+    public function hello(Request $request)
     {
-        $formObj = new HelloForm();
-        $form = $this->createForm(HelloType::class, $formObj);
-        $form->handleRequest($request);
-
-        if ($request->getMethod() === 'POST') {
-            $formObj = $form->getData();
-            $session->getFlashBag()->add('info.mail', $formObj);
-            $msg = 'Hello, ' . $formObj->getName() . '!!';
-        } else {
-            $msg = 'Send Form';
+        if (!$this->getUser()->getIsActivated()) {
+            throw new AccessDeniedException('Unable to access!');
         }
-        return $this->render('hello/hello.html.twig', [
-           'title' => 'Hello',
-           'message' => $msg,
-           'bug' => $session->getFlashBag(),
-           'form' => $form->createView(),
+
+        return $this->render('hello/index.html.twig', [
+            'title' => 'Hello',
+            'message' => 'User Information.',
+            'user' => $this->getUser(),
         ]);
     }
 
